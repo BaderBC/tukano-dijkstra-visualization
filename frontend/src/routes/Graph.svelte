@@ -114,10 +114,10 @@
         async dijkstra(): Promise<{ path: string[]; distance: number; }> {
             // Cache:
             if (this.serializedNodes === this.lastDijkstraRunSerializedNodes) {
-                //return  {
-                //    path: this.shortestPath!,
-                //    distance: this.shortestPathDistance!,
-                //}
+                return  {
+                    path: this.shortestPath!,
+                    distance: this.shortestPathDistance!,
+                }
             }
 
             const res = await fetch(`${BACKEND_URL}/dijkstra`, {
@@ -152,10 +152,12 @@
 </script>
 
 <script lang="ts">
-    import {onMount} from 'svelte';
-    import {derived, type Writable, writable} from 'svelte/store';
+    import {type Writable, writable} from 'svelte/store';
 
     export let graph: Writable<GraphClass>;
+    export function runDijkstraAnimation() {
+        moveStickMan($graph.shortestPath || []);
+    }
 
     const stickManPosition = writable<{ x: number, y: number }>({
         x: $graph.getNode(START_NODE)?.x || 0,
@@ -201,12 +203,6 @@
 
         animate();
     }
-
-    onMount(() => {
-        derived(graph, ($g) => $g.shortestPath).subscribe(() => {
-            moveStickMan($graph.shortestPath || []);
-        });
-    });
 </script>
 
 <style>

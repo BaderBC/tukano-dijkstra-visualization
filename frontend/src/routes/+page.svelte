@@ -13,6 +13,7 @@
         {id: 'E', edges: [{to: 'A', weight: 1}]},
     ]);
     let graph = writable<GraphClass>(graphData);
+    let runDijkstraAnimation: () => void;
     
     let nodeToAddName: string = '';
     function addNode() {
@@ -28,18 +29,16 @@
     }
     
     async function runDijkstra() {
-        console.log(graphData);
-        
         await graphData.dijkstra();
-        console.log(graphData.shortestPath, graphData.shortestPathDistance);
         graph.set(graphData);
+        runDijkstraAnimation();
     }
 </script>
 
 <main>
     <h1>Dijkstra's Algorithm Visualization</h1>
     <MapSelectBar/>
-    <Graph bind:graph/>
+    <Graph bind:graph bind:runDijkstraAnimation/>
     <div style="display: flex; flex-direction: row; gap: 15px; margin: 15px 0">
         <div class="button-as-input-label">
             <Button on:click={addNode} style="border: 0; border-radius: 0">Add Node</Button>
