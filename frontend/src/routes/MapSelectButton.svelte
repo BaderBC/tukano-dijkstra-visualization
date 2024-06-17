@@ -1,14 +1,33 @@
 <script lang="ts">
-    import {Button} from "@svelteuidev/core";
+    import {Button, FileUpload, Modal} from "@svelteuidev/core";
+    import type {Writable} from "svelte/store";
+    import {GraphClass} from "./Graph.svelte";
 
     export let mapName: string;
     export let current: boolean = false;
+    export let graph: Writable<GraphClass>;
 
     const buttonColor = current ? 'green' : 'blue';
 
+    let isSettingsModalOpened = false;
+
+    function onClink() {
+        if (current) {
+            isSettingsModalOpened = true;
+            return;
+        }
+    }
+    
+    let files: any;
+    async function setNewGraph() {
+        const rawContent = await files[0].file.text();
+        JSON.parse(rawContent); // ensure it is valid JSON
+        graph.set(GraphClass.fromJSON(rawContent));
+        isSettingsModalOpened = false;
+    }
 </script>
 
-<Button style="border-radius: 15px;" color={buttonColor}>
+<Button on:click={onClink} style="border-radius: 15px;" color={buttonColor}>
     {mapName}
     {#if (current)}
         <span style="margin-right: 10px;"/>
@@ -17,3 +36,8 @@
         </svg>
     {/if}
 </Button>
+<Modal opened={isSettingsModalOpened} on:close={() => isSettingsModalOpened = false} title="Settings">
+    <h3>Read graph from file:</h3>
+    <FileUpload style="margin-bottom: 15px" label="Upload" bind:files />
+    <Button on:click={setNewGraph}>Load graph</Button>
+</Modal>

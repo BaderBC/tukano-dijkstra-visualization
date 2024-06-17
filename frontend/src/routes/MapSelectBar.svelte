@@ -1,7 +1,10 @@
-<script>
+<script lang="ts">
     import {Button, TextInput} from "@svelteuidev/core";
     import MapSelectButton from "./MapSelectButton.svelte";
+    import type {Writable} from "svelte/store";
+    import {type GraphClass} from "./Graph.svelte";
 
+    export let graph: Writable<GraphClass>;
     const mapNames = ['test1', 'test2', 'mapa fajna'];
 </script>
 
@@ -11,9 +14,9 @@
         <TextInput style="border: 0; border-radius: 0" placeholder="Nazwa mapy"/>
     </div>
     {#each mapNames as mapName}
-        <MapSelectButton mapName={mapName}/>
+        <MapSelectButton bind:graph mapName={mapName}/>
     {/each}
-    <MapSelectButton current mapName="current"/>
+    <MapSelectButton bind:graph current mapName="current"/>
 </div>
 
 <style>
