@@ -25,6 +25,18 @@
         graph.set(GraphClass.fromJSON(rawContent));
         isSettingsModalOpened = false;
     }
+    
+    function downloadGraph() {
+        const element = document.createElement('a');
+        const file = new Blob([$graph.toJSON()], {type: 'text/plain'});
+        
+        element.href = URL.createObjectURL(file);
+        element.download = 'graph.json';
+        document.body.appendChild(element);
+        
+        element.click();
+        element.remove();
+    }
 </script>
 
 <Button on:click={onClink} style="border-radius: 15px;" color={buttonColor}>
@@ -39,5 +51,6 @@
 <Modal opened={isSettingsModalOpened} on:close={() => isSettingsModalOpened = false} title="Settings">
     <h3>Read graph from file:</h3>
     <FileUpload style="margin-bottom: 15px" label="Upload" bind:files />
-    <Button on:click={setNewGraph}>Load graph</Button>
+    <Button style="margin-bottom: 15px" on:click={setNewGraph}>Load graph</Button>
+    <Button on:click={downloadGraph}>Download graph</Button>
 </Modal>
